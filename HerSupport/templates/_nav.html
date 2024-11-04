@@ -1,0 +1,63 @@
+<header class="bg-white custom-shadow">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <div class="flex items-center space-x-8">
+                <span class="text-2xl">👩‍⚕️</span>
+                <div class="hidden md:flex space-x-6">
+                    <a href="{% url 'health' %}"
+                        class="nav-link text-gray-600 hover:text-pink-600 font-montserrat font-medium">
+                        Health
+                    </a>
+                    <a href="{% url 'biomarkers' %}"
+                        class="nav-link text-gray-600 hover:text-pink-600 font-montserrat font-medium">
+                        Biomarkers
+                    </a>
+                    <a href="{% url 'bot' %}"
+                        class="nav-link text-gray-600 hover:text-pink-600 font-montserrat font-medium">
+                        Talk to Grace
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <span class="text-pink-500">❤️</span>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <span class="font-montserrat font-medium text-gray-600">Hi, {{user.get_full_name|title}}</span>
+
+                    <form method="post" action="{% url 'logout' %}"
+                        class="nav-link bg-pink-600 text-white px-4 py-2 rounded-full hover:bg-pink-700 transition-colors duration-300 font-montserrat font-medium flex items-center">
+                        {% csrf_token %}
+                        <button type=" submit"
+                            style="background-color: transparent; outline:none; border:none; font-weight: 700;">
+                            Logout
+                            <span class="ml-2">👋</span>
+                        </button>
+                    </form>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'register' %}"
+                        class="nav-link bg-pink-600 text-white px-4 py-2 rounded-full hover:bg-pink-700 transition-colors duration-300 font-montserrat font-medium flex items-center">
+                        Sign Up/Log In <span class="ml-2">🔐</span>
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden py-4">
+            <div class="flex flex-col space-y-3">
+                <a href="#" class="text-gray-600 hover:text-pink-600 font-montserrat font-medium py-2">
+                    Health
+                </a>
+                <a href="#" class="text-gray-600 hover:text-pink-600 font-montserrat font-medium py-2">
+                    Biomarkers
+                </a>
+                <a href="#" class="text-gray-600 hover:text-pink-600 font-montserrat font-medium py-2">
+                    Talk to Grace
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>

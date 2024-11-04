@@ -1,0 +1,243 @@
+{% extends '_base.html' %}
+{% block title %}
+Health | Vitals and Biomarkers
+{% endblock title %}
+
+{% block body %}
+{% include '_nav.html' %}
+<main class="max-w-4xl mx-auto mt-8 px-4 flex-grow">
+
+    <div class="container mx-auto py-8 bg-white rounded-lg p-8 shadow-lg " style="min-width: 870px;">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Health Monitoring</h1>
+            <p class="text-gray-600">Advanced biomarkers tracking and personalized health insights for women</p>
+        </div>
+
+        <div class="bg-pink-50 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Add health biomarkers for insights</h2>
+            <div id="form-container" class="space-y-4"></div>
+        </div>
+
+        <div class="added-markers">
+            {% if markers %}
+            <div class="text-xl font-semibold text-gray-800 mb-4">You previously added:</div>
+            <div class="markers-list bg-pink-50 rounded-lg p-6">
+                <ul class="space-y-2">
+                    {% for marker in markers %}
+                    <li class="flex items-center space-x-2">
+                        <span class="marker-name font-medium text-gray-800">{{ marker.marker }}</span>
+                        <span class="marker-value text-pink-600">
+                            ({{ marker.value }})
+                        </span>
+                        <span class="text-gray-600">on</span>
+                        <span class="marker-time text-gray-800">{{ marker.time|date:"j F, Y" }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% include '_footer.html' %}
+
+
+<script>
+    const biomarkers = [
+        // Hormonal Health
+        { name: "Estrogen", standard_unit: "pg/mL" },
+        { name: "Progesterone", standard_unit: "ng/mL" },
+        { name: "Follicle-Stimulating Hormone (FSH)", standard_unit: "mIU/mL" },
+        { name: "Luteinizing Hormone (LH)", standard_unit: "mIU/mL" },
+        { name: "Testosterone", standard_unit: "ng/dL" },
+        { name: "Prolactin", standard_unit: "ng/mL" },
+        { name: "Thyroid-Stimulating Hormone (TSH)", standard_unit: "mIU/L" },
+        { name: "Free T3", standard_unit: "pg/mL" },
+        { name: "Free T4", standard_unit: "ng/dL" },
+        { name: "Anti-Müllerian Hormone (AMH)", standard_unit: "ng/mL" },
+
+        // Cardiovascular Health
+        { name: "Total Cholesterol", standard_unit: "mg/dL" },
+        { name: "Low-Density Lipoprotein (LDL)", standard_unit: "mg/dL" },
+        { name: "High-Density Lipoprotein (HDL)", standard_unit: "mg/dL" },
+        { name: "Triglycerides", standard_unit: "mg/dL" },
+        { name: "High-Sensitivity C-Reactive Protein (hs-CRP)", standard_unit: "mg/L" },
+        { name: "Apolipoprotein A1 (ApoA1)", standard_unit: "mg/dL" },
+        { name: "Apolipoprotein B (ApoB)", standard_unit: "mg/dL" },
+        { name: "Lipoprotein(a) (Lp(a))", standard_unit: "nmol/L" },
+        { name: "Homocysteine", standard_unit: "µmol/L" },
+        { name: "N-Terminal pro-B-type Natriuretic Peptide (NT-proBNP)", standard_unit: "pg/mL" },
+
+        // Bone Health
+        { name: "Vitamin D", standard_unit: "ng/mL" },
+        { name: "Calcium", standard_unit: "mg/dL" },
+        { name: "Phosphorus", standard_unit: "mg/dL" },
+        { name: "Parathyroid Hormone (PTH)", standard_unit: "pg/mL" },
+        { name: "Osteocalcin", standard_unit: "ng/mL" },
+
+        // Cancer Risk
+        { name: "BRCA1 Genetic Marker", standard_unit: "Positive/Negative" },
+        { name: "BRCA2 Genetic Marker", standard_unit: "Positive/Negative" },
+        { name: "CA-125", standard_unit: "U/mL" },
+        { name: "HE4 (Human Epididymis Protein 4)", standard_unit: "pmol/L" },
+        { name: "Carcinoembryonic Antigen (CEA)", standard_unit: "ng/mL" },
+        { name: "Alpha-Fetoprotein (AFP)", standard_unit: "ng/mL" },
+
+        // Diabetes and Metabolic Health
+        { name: "Fasting Blood Glucose", standard_unit: "mg/dL" },
+        { name: "Hemoglobin A1c (HbA1c)", standard_unit: "%" },
+        { name: "Insulin", standard_unit: "µIU/mL" },
+        { name: "C-Peptide", standard_unit: "ng/mL" },
+        { name: "Adiponectin", standard_unit: "µg/mL" },
+
+        // Iron and Anemia-Related Markers
+        { name: "Ferritin", standard_unit: "ng/mL" },
+        { name: "Hemoglobin", standard_unit: "g/dL" },
+        { name: "Hematocrit", standard_unit: "%" },
+        { name: "Iron", standard_unit: "µg/dL" },
+        { name: "Total Iron-Binding Capacity (TIBC)", standard_unit: "µg/dL" },
+        { name: "Transferrin Saturation", standard_unit: "%" },
+
+        // Liver Function
+        { name: "Alanine Aminotransferase (ALT)", standard_unit: "U/L" },
+        { name: "Aspartate Aminotransferase (AST)", standard_unit: "U/L" },
+        { name: "Alkaline Phosphatase (ALP)", standard_unit: "U/L" },
+        { name: "Bilirubin", standard_unit: "mg/dL" },
+        { name: "Gamma-Glutamyl Transferase (GGT)", standard_unit: "U/L" },
+
+        // Kidney Function
+        { name: "Creatinine", standard_unit: "mg/dL" },
+        { name: "Blood Urea Nitrogen (BUN)", standard_unit: "mg/dL" },
+        { name: "Uric Acid", standard_unit: "mg/dL" },
+        { name: "Cystatin C", standard_unit: "mg/L" },
+
+        // Inflammation and Immune Health
+        { name: "Erythrocyte Sedimentation Rate (ESR)", standard_unit: "mm/hr" },
+        { name: "Vitamin B12", standard_unit: "pg/mL" },
+        { name: "Folate", standard_unit: "ng/mL" },
+        { name: "White Blood Cell Count (WBC)", standard_unit: "cells/µL" }
+
+    ];
+
+    function createBiomarkerForm() {
+        const formContainer = document.getElementById('form-container');
+
+        const inputElement = document.createElement('input');
+        inputElement.placeholder = 'Type to search biomarkers...';
+        inputElement.id = 'biomarker-input';
+
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'suggestions';
+        suggestionsContainer.style.display = 'none';
+
+        const valueInput = document.createElement('input');
+        valueInput.id = 'biomarker-value';
+        valueInput.placeholder = 'Enter value';
+        valueInput.style.display = 'none';
+
+        const unitLabel = document.createElement('div');
+        unitLabel.id = 'standard-unit';
+        unitLabel.style.display = 'none';
+
+        const positiveNegativeSelect = document.createElement('select');
+        positiveNegativeSelect.id = 'positive-negative-select';
+        positiveNegativeSelect.style.display = 'none';
+        positiveNegativeSelect.innerHTML = `
+                <option value="">Select...</option>
+                <option value="Positive">Positive</option>
+                <option value="Negative">Negative</option>
+            `;
+
+        const submitButton = document.createElement('button');
+        submitButton.setAttribute('class', 'button-animation');
+        submitButton.innerText = 'Submit';
+
+        inputElement.addEventListener('input', (event) => {
+            const inputValue = event.target.value.toLowerCase();
+            suggestionsContainer.innerHTML = '';
+
+            const filteredBiomarkers = biomarkers.filter(biomarker =>
+                biomarker.name.toLowerCase().includes(inputValue)
+            );
+
+            if (filteredBiomarkers.length > 0 && inputValue) {
+                suggestionsContainer.style.display = 'block';
+                filteredBiomarkers.forEach(biomarker => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.textContent = biomarker.name;
+
+                    suggestionItem.addEventListener('click', () => {
+                        inputElement.value = biomarker.name;
+                        suggestionsContainer.style.display = 'none';
+                        handleSelection(biomarker);
+                    });
+
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+
+        const handleSelection = (biomarker) => {
+            if (biomarker.standard_unit === "Positive/Negative") {
+                valueInput.style.display = 'none';
+                positiveNegativeSelect.style.display = 'block';
+                unitLabel.style.display = 'none';
+            } else {
+                valueInput.style.display = 'block';
+                positiveNegativeSelect.style.display = 'none';
+                unitLabel.textContent = `Unit: ${biomarker.standard_unit}`;
+                unitLabel.style.display = 'block';
+            }
+        };
+
+        formContainer.appendChild(inputElement);
+        formContainer.appendChild(suggestionsContainer);
+        formContainer.appendChild(valueInput);
+        formContainer.appendChild(unitLabel);
+        formContainer.appendChild(positiveNegativeSelect);
+        formContainer.appendChild(submitButton);
+    }
+
+    createBiomarkerForm();
+    let btn = document.querySelector('.button-animation')
+    btn.addEventListener('click', add_biomarker)
+
+    function add_biomarker() {
+        let marker = document.querySelector('#biomarker-input').value;
+        document.querySelector('#biomarker-input').value = "";
+        let value = document.querySelector('#biomarker-value').value;
+        document.querySelector('#biomarker-value').value = "";
+        let selection = document.querySelector("#positive-negative-select").value
+        document.querySelector("#positive-negative-select").value = "";
+        let unit = document.querySelector('#standard-unit').innerText;
+        document.querySelector('#standard-unit').innerText = ""
+
+        if (marker && (value || selection)) {
+            $.ajax({
+                url: "{% url 'biomarkers' %}",
+                data: JSON.stringify({ 'marker': marker, "value": value + " " + unit }),
+                type: 'post',
+                success: (data) => {
+                    console.log(data)
+                    const toast = document.getElementById('toast');
+                    toast.innerText = marker + ' Added!';
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        toast.classList.add('hide');
+                        setTimeout(() => {
+                            toast.classList.remove('hide');
+                        }, 500);
+                    }, 3000);
+                },
+                error: (error) => {
+                    console.log(error)
+                }
+            })
+        }
+    }
+</script>
+{% endblock body %}

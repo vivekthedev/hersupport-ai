@@ -1,0 +1,177 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Register Yourself
+{% endblock title %}
+
+{% block body %}
+
+<body class="bg-gradient-to-r from-pink-200 to-pink-400 min-h-screen">
+    {% include '_nav.html' %}
+
+    <div class="container mx-auto px-4 py-12 max-w-md">
+        <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-[1.02] transition-transform duration-300">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Sign Up</h1>
+                <p class="text-gray-600">We are here to help you on your health journey</p>
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <style>
+                    /* Form styling */
+                    .form-group {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-group label {
+                        display: block;
+                        font-size: 0.875rem;
+                        font-weight: 500;
+                        color: #4b5563;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .form-control {
+                        width: 100%;
+                        padding: 0.75rem 1rem;
+                        border: 2px solid #fce7f3;
+                        border-radius: 0.75rem;
+                        transition: all 0.3s ease;
+                        font-size: 1rem;
+                        color: #374151;
+                        background-color: white;
+                    }
+
+                    .form-control:focus {
+                        outline: none;
+                        border-color: #ec4899;
+                        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+                        transform: translateY(-1px);
+                    }
+
+                    .invalid-feedback {
+                        color: #e11d48;
+                        font-size: 0.875rem;
+                        margin-top: 0.25rem;
+                    }
+
+                    /* Submit button styling */
+                    .submit-btn {
+                        width: 100%;
+                        padding: 0.875rem;
+                        background: linear-gradient(to right, #ec4899, #db2777);
+                        color: white;
+                        border: none;
+                        border-radius: 0.75rem;
+                        font-weight: 600;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        position: relative;
+                        overflow: hidden;
+                    }
+
+                    .submit-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
+                    }
+
+                    .submit-btn:active {
+                        transform: translateY(0);
+                    }
+
+                    .submit-btn::after {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: -100%;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(to right,
+                                transparent,
+                                rgba(255, 255, 255, 0.2),
+                                transparent);
+                        transition: 0.5s;
+                    }
+
+                    .submit-btn:hover::after {
+                        left: 100%;
+                    }
+
+                    /* Crispy form overrides */
+                    .asteriskField {
+                        color: #ec4899;
+                        margin-left: 0.25rem;
+                    }
+
+                    .help-text {
+                        color: #6b7280;
+                        font-size: 0.875rem;
+                        margin-top: 0.25rem;
+                    }
+                </style>
+
+                {{ form|crispy }}
+
+                <button type="submit" class="submit-btn">
+                    Create Account
+                </button>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">
+                        Already have an account?
+                        <a href="{% url 'login' %}"
+                            class="text-pink-600 font-medium hover:text-pink-700 transition-colors">
+                            Log In
+                        </a>
+                    </p>
+                </div>
+            </form>
+
+            {% if form.errors %}
+            <div class="mt-6 bg-pink-50 border-l-4 border-pink-600 p-4 rounded-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-pink-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-pink-600">
+                            Please check your registration details and try again.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% include '_footer.html' %}
+    <script>
+        // Add floating label animation
+        document.querySelectorAll('.form-control').forEach(input => {
+            const label = input.previousElementSibling;
+            if (label && label.tagName === 'LABEL') {
+                if (input.value) {
+                    label.classList.add('transform', '-translate-y-2', 'scale-90');
+                }
+
+                input.addEventListener('focus', () => {
+                    label.classList.add('transform', '-translate-y-2', 'scale-90');
+                });
+
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        label.classList.remove('transform', '-translate-y-2', 'scale-90');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+{% endblock body %}

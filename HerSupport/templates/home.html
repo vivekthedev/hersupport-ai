@@ -1,0 +1,73 @@
+{% extends '_base.html' %}
+{% block title %}
+Welcome to HerSupport
+{% endblock title %}
+{% block body %}
+{% include '_nav.html' %}
+
+<div class="gradient-bg py-20 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="animate-bounce text-4xl mb-4">🎯</div>
+        <h1 class="text-5xl font-bold mb-4 font-montserrat">
+            Striving towards Gender Equality
+        </h1>
+        <h2 class="text-2xl mb-8 opacity-90 font-roboto font-light">
+            Using Tech for Women's Health 👩‍💻
+        </h2>
+        <div class="mt-8">
+            <a href="https://www.un.org/sustainabledevelopment/gender-equality/"
+                class="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-montserrat font-medium rounded-full text-white hover:bg-white hover:text-pink-600 transition-all duration-300">
+                Know more about UN SDG5 🌟
+            </a>
+        </div>
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 font-montserrat">Empowering Women Through Technology 💪</h2>
+        <p class="mt-4 text-xl text-gray-600 font-roboto">Innovative solutions for better healthcare access and
+            equality</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div class="bg-white rounded-xl p-6 custom-shadow card-hover">
+            <div class="text-4xl mb-4">👩‍⚕️</div>
+            <h3 class="text-xl font-semibold text-pink-600 mb-2 font-montserrat">Health Monitoring</h3>
+            <p class="text-gray-600 font-roboto">
+                Advanced biomarkers tracking and personalized health insights for women
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 custom-shadow card-hover">
+            <div class="text-4xl mb-4">🤖</div>
+            <h3 class="text-xl font-semibold text-pink-600 mb-2 font-montserrat">AI Assistant Grace</h3>
+            <p class="text-gray-600 font-roboto">
+                24/7 intelligent health companion for personalized care and support
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 custom-shadow card-hover">
+            <div class="text-4xl mb-4">📱</div>
+            <h3 class="text-xl font-semibold text-pink-600 mb-2 font-montserrat">Easy Access</h3>
+            <p class="text-gray-600 font-roboto">
+                All in one platform ensuring healthcare accessibility for all women
+            </p>
+        </div>
+    </div>
+    <div class="mt-20 bg-white rounded-2xl p-8 custom-shadow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+
+            <div>
+                <div class="text-3xl font-bold text-pink-600 mb-2 font-montserrat">24/7</div>
+                <div class="text-gray-600 font-roboto">AI Support</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-pink-600 mb-2 font-montserrat">98%</div>
+                <div class="text-gray-600 font-roboto">Accuracy</div>
+            </div>
+        </div>
+    </div>
+</main>
+{% include '_footer.html' %}
+{% endblock body %}

@@ -1,0 +1,91 @@
+{% extends '_base.html' %}
+{% block title %}
+HerSupport | Your Health Assistant - Grace
+{% endblock title %}
+{% block body %}
+{% include '_nav.html' %}
+<main class="max-w-4xl mx-auto mt-8 px-4 flex-grow">
+    <div class="container mx-auto py-8 bg-white rounded-lg p-8 shadow-lg " style="min-width: 870px;">
+        <div class="text-4xl font-bold my-8 font-montserrat text-slate-950">
+            Say Hello! to Grace, Your Personal Health Assistant
+        </div>
+
+        <div class="w-full bg-white rounded-lg shadow-lg p-6 border-2">
+            <div class="h-96 overflow-y-auto space-y-4 p-4 messages">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 text-blue-900 p-3 rounded-lg max-w-xs ai_text">
+                        Hi! I'm Grace, your Personal Health Assistant. How can I help you today?
+                    </div>
+                </div>
+                {% for message in messages %}
+                <div class="flex {% if forloop.counter|divisibleby:2 %}
+                    items-start
+                {% else %}
+                    items-end justify-end
+                {% endif %}">
+                    <div class="bg-purple-100 text-purple-900 p-3 rounded-lg max-w-xs  ai_text">
+                        {{message}}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <form class="flex mt-4 message-box" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Type your message..."
+                    class="flex-grow border border-gray-300 rounded-l-lg p-2 focus:outline-none focus:ring focus:border-blue-300"
+                    name="input">
+                <button type="submit" class="bg-blue-500 text-white px-4 rounded-r-lg hover:bg-blue-600">Send</button>
+            </form>
+        </div>
+    </div>
+</main>
+{% include '_footer.html' %}
+<script>
+
+    function scrollToBottom() {
+        const messagesContainer = document.querySelector('.messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    scrollToBottom();
+    let form = document.querySelector('.message-box');
+    let chatbox = document.querySelector('.messages');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formdata = new FormData(form);
+        form.reset();
+        const input = formdata.get('input');
+
+        let user_bubble = document.createElement('div')
+        user_bubble.setAttribute('class', 'flex items-end justify-end')
+        let userHTML = `<div class="bg-purple-100 text-purple-900 p-3 rounded-lg max-w-xs">${input}</div>`;
+        user_bubble.innerHTML = userHTML;
+        chatbox.appendChild(user_bubble);
+
+        let ai_bubble = document.createElement('div');
+        ai_bubble.setAttribute('class', 'flex items-start');
+        let ai_msg = document.createElement('div');
+        ai_msg.setAttribute('class', 'bg-blue-100 text-blue-900 p-3 rounded-lg max-w-xs ai_text');
+        ai_msg.innerText = "Typing...";
+        ai_bubble.appendChild(ai_msg);
+        chatbox.appendChild(ai_bubble);
+        scrollToBottom();
+        if (input != '') {
+            $.ajax({
+                type: 'post',
+                url: "{% url 'bot' %}",
+                data: JSON.stringify({ 'data': input }),
+                success: (data) => {
+                    ai_msg.innerText = data['response'];
+                    scrollToBottom()
+
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            })
+        }
+
+    })
+</script>
+{% endblock body %}

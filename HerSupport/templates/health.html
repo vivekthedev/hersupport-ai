@@ -1,0 +1,170 @@
+{% extends '_base.html' %}
+{% block title %}
+Health | HerSupport
+{% endblock title %}
+{% block body %}
+{% include '_nav.html' %}
+
+<main class="max-w-4xl mx-auto mt-8 px-4 flex-grow">
+    <div class="bg-white rounded-lg p-8 shadow-lg" style="min-width: 870px;">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">
+            Taking your Health Seriously is the First Step for well being 👩‍⚕️
+        </h1>
+
+        <div class="mb-8">
+            <form action="" id="symptom-form">
+                {% csrf_token %}
+                <label class="block text-gray-700 mb-2" for="symptom">Tell us how are you feeling?</label>
+                <div class="flex space-x-4">
+                    <input type="text"
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-pink-500"
+                        placeholder="Enter your symptoms..." name="symptom" required>
+                    <button type="submit" class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mb-8 symptom-list">
+
+        </div>
+
+        <div class="mt-8">
+            <button class="bg-gray-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 mb-6 ask-btn"
+                style="display: none;" onclick="sendData()">
+                <span>Ask Grace</span>
+                <span class="text-xl">🤖</span>
+            </button>
+
+            <div class="max-w-lg p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg wait-tag"
+                style="display: none;">
+                <div class="flex">
+                    <svg class="w-6 h-6 mr-2 text-blue-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                    </svg>
+                    <p class="text-sm">
+                        Please wait while we fetch the results
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="bg-gray-300 rounded-xl p-6 response-section" style="display: none;">
+                <h2 class="text-2xl font-semibold mb-4 header-text">The Symptoms you are facing may be due to:</h2>
+
+                <div class="bg-white rounded-xl p-6 mb-4 possible-diseases">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+{% include '_footer.html' %}
+<script>
+    document.querySelectorAll('details').forEach((detail) => {
+        detail.addEventListener('click', (e) => {
+            if (detail.open) {
+                e.preventDefault();
+                detail.classList.add('closing');
+                setTimeout(() => {
+                    detail.open = false;
+                    detail.classList.remove('closing');
+                }, 300);
+            }
+        });
+    });
+
+    let symptoms = [];
+    let symptoms_elements = [];
+    let button = false;
+    let form = document.querySelector('#symptom-form');
+    let list = document.querySelector('.symptom-list');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formdata = new FormData(form);
+        form.reset()
+        const text = formdata.get('symptom');
+
+        const symptomText = document.createTextNode(text);
+        const symptomTag = document.createElement("div");
+        symptomTag.setAttribute("class", "symptom-tag");
+        symptomTag.appendChild(symptomText);
+
+        const removeElement = document.createElement("span");
+        removeElement.setAttribute("class", "close");
+        removeElement.setAttribute("onClick", "removeElement(this)");
+
+        const removeIcon = document.createTextNode("×");
+        removeElement.appendChild(removeIcon);
+        symptomTag.appendChild(removeElement);
+
+        symptoms.push(text);
+        symptoms_elements.push(symptomTag);
+
+        if (!button) {
+            document.querySelector('.ask-btn').removeAttribute('style')
+            button = true;
+        }
+        renderSymptomToDocument()
+
+    })
+    function renderSymptomToDocument() {
+        list.innerHTML = ''
+
+        symptoms_elements.forEach((e, i) => {
+            e.lastChild.setAttribute('id', i);
+        })
+        symptoms_elements.forEach(element => {
+            list.appendChild(element);
+        });
+
+    }
+    function removeElement(e) {
+
+        let index = parseInt(e.id)
+        symptoms.splice(index, 1);
+        symptoms_elements.splice(index, 1);
+        renderSymptomToDocument();
+        if (symptoms.length == 0) {
+            document.querySelector('.ask-btn').setAttribute('style', 'display: none')
+            button = false;
+        }
+    }
+
+
+    function sendData() {
+        let btn = document.querySelector('.ask-btn');
+        let infoTag = document.querySelector('.wait-tag');
+        let responseSection = document.querySelector('.response-section')
+        btn.setAttribute('id', 'disable');
+        infoTag.removeAttribute('style');
+
+        $.ajax({
+            url: "{% url 'api' %}",
+            data: JSON.stringify({ 'data': symptoms }),
+            type: 'post',
+            success: (data) => {
+                responseSection.removeAttribute('style');
+                infoTag.setAttribute('style', 'display: none;');
+                btn.removeAttribute('id');
+                if (data['status'] === "success") {
+                    let responseTitle = document.querySelector('.header-text');
+                    responseTitle.innerText = "The Symptoms you are facing may be due to:";
+                    document.querySelector('.possible-diseases').innerHTML = data['data']
+                }
+                else {
+                    let responseTitle = document.querySelector('.header-text');
+                    responseTitle.innerText(data["data"]);
+                }
+            },
+            error: (error) => {
+                console.log(error)
+            }
+        });
+
+    }
+</script>
+{% endblock body %}
