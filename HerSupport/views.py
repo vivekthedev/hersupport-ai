@@ -82,7 +82,7 @@ def api_call(request):
         )
 
     card = """
-    <div class="disease-card">
+    <div class="disease-card bg-white rounded-xl p-6 mb-4">
 
         <h3 class="text-xl font-semibold text-pink-600 mb-4">{name}</h3>
         <p class="text-gray-600 mb-6">
